@@ -1,0 +1,45 @@
+
+Sub TestMacro()
+Dim objMyList As ListObject
+Dim objWksheet As Worksheet
+Dim strSPServer As String
+Const SERVER As String = "mysite.spt.ford.com/personal/kbhuvan3"
+Const LISTNAME As String = "{3EBF9E29-1CE1-469C-8290-0733A07C5A0F}"
+
+Const VIEWNAME As String = ""
+' The SharePoint server URL  pointing to
+' the SharePoint list to import into Excel.
+strSPServer = "http://" & SERVER & "/_vti_bin"
+' Add a new worksheet to the active workbook.
+Set objWksheet = Worksheets.Add
+' Add a list range to the newly created worksheet
+' and populated it with the data from the SharePoint list.
+Set objMyList = objWksheet.ListObjects.Add(xlSrcExternal, Array(strSPServer, LISTNAME, VIEWNAME), True, , Range("a2"))
+Set objMyList = Nothing
+Set objWksheet = Nothing
+
+Dim dt As String, wbNam As String
+
+wbNam = "Sheet_"
+dt = Format(CStr(Now), "yyy_mm_dd_hh_mm")
+ActiveSheet.Name = wbNam & dt
+
+'Step 1:  Declare your variables
+    Dim ws As Worksheet
+'Step 2: Start looping through all worksheets
+    For Each ws In ThisWorkbook.Worksheets
+'Step 3: Check each worksheet name
+    If ws.Name <> ThisWorkbook.ActiveSheet.Name Then
+'Step 4: Turn off warnings and delete
+    Application.DisplayAlerts = False
+    ws.Delete
+    Application.DisplayAlerts = True
+    End If
+'Step 5:  Loop to next worksheet
+    Next ws
+
+ActiveWorkbook.Save
+
+
+End Sub
+
